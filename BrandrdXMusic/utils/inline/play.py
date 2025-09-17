@@ -260,7 +260,8 @@ def stream_markup2(_, chat_id):
 
 
 def stream_markup_timer2(_, chat_id, played, dur):
-    played_sec = time_to_seconds(played)    duration_sec = time_to_seconds(dur)
+    played_sec = time_to_seconds(played)    
+    duration_sec = time_to_seconds(dur)
     percentage = (played_sec / duration_sec) * 100
     umm = math.floor(percentage)
     if 0 < umm <= 40:
