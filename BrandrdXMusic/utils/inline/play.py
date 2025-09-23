@@ -2,8 +2,8 @@ import math
 
 from pyrogram.types import InlineKeyboardButton
 
-from NobitaMusic.utils.formatters import time_to_seconds
-from NobitaMusic import app
+from BrandrdXMusic.utils.formatters import time_to_seconds
+from BrandrdXMusic import app
 
 def track_markup(_, videoid, user_id, channel, fplay):
     buttons = [
