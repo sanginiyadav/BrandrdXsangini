@@ -56,6 +56,37 @@ def welcomepic(pic, user, chatname, id, uname):
     background.save(f"downloads/welcome#{id}.png")
     return f"downloads/welcome#{id}.png"
 
+# ✅ `/welcome` Command: Enable/Disable Special Welcome
+@app.on_message(filters.command("welcome") & ~filters.private)
+async def auto_state(_, message):
+    usage = "**❖ ᴜsᴀɢᴇ ➥** /welcome [on|off]"
+    if len(message.command) == 1:
+        return await message.reply_text(usage)
+
+    chat_id = message.chat.id
+    user = await app.get_chat_member(message.chat.id, message.from_user.id)
+
+    if user.status in (enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER):
+        A = await wlcm.find_one({"chat_id": chat_id})
+        state = message.text.split(None, 1)[1].strip().lower()
+
+        if state == "on":
+            if A and not A.get("disabled", False):
+                return await message.reply_text("✦ Special Welcome Already Enabled")
+            await wlcm.update_one({"chat_id": chat_id}, {"$set": {"disabled": False}}, upsert=True)
+            await message.reply_text(f"✦ Enabled Special Welcome in {message.chat.title}")
+
+        elif state == "off":
+            if A and A.get("disabled", False):
+                return await message.reply_text("✦ Special Welcome Already Disabled")
+            await wlcm.update_one({"chat_id": chat_id}, {"$set": {"disabled": True}}, upsert=True)
+            await message.reply_text(f"✦ Disabled Special Welcome in {message.chat.title}")
+
+        else:
+            await message.reply_text(usage)
+    else:
+        await message.reply("✦ Only Admins Can Use This Command")
+
 @app.on_chat_member_updated(filters.group, group=-3)
 async def greet_group(_, member: ChatMemberUpdated):
     chat_id = member.chat.id
